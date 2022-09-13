@@ -1,9 +1,13 @@
 import { collection, doc, setDoc } from "firebase/firestore/lite";
 import { FirebaseDB } from "../../firebase/config";
+import { loadNotes } from "../../helpers";
+import { addNewEmptyNote, setActiveNote,savingNewNote, setNotes, setSaving, updateNote } from "./journalSlice";
 
 
 export const startNewNote = ()=>{
     return async(dispatch,getState)=>{
+
+        dispatch(savingNewNote())
 
         const {uid} = getState().auth;
 
@@ -17,8 +21,38 @@ export const startNewNote = ()=>{
 
         const setDocResp = await setDoc(newDoc,newNote)
 
-        //DISPATCH
-        //dispatch new Note
-
+        newNote.id = newDoc.id;
+        dispatch(addNewEmptyNote(newNote))
+        dispatch(setActiveNote(newNote))
     }   
+}
+
+export const startLoadingNotes = ()=>{
+    return async(dispatch,getState)=>{
+        const {uid} = getState().auth; 
+
+        const notes = await loadNotes(uid);
+
+        dispatch(setNotes(notes));
+        
+    }
+}
+
+export const startSaveNote = ()=>{
+    return async(dispatch,getState)=>{
+
+        dispatch(setSaving());
+
+        const {uid} = getState().auth; 
+        const {active:note} = getState().journal; 
+
+        const noteToFirestore = {...note};
+        delete noteToFirestore.id;
+
+        const docRef = doc(FirebaseDB,`${uid}/journal/notes/${note.id}`);
+
+        await setDoc(docRef, noteToFirestore, {merge:true})//si hay campos q no hay en la bd se mantienen
+    
+        dispatch(updateNote(note));
+    }
 }
