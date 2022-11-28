@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: journal-app
+spec:
+  selector:
+    matchLabels:
+      name: journal-app
+  template:
+    metadata:
+      labels:
+        name: journal-app
+    spec:
+      containers:
+        - image: diegog75/journal-app-react
+          name: journal-app
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              protocol: TCP
