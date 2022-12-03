@@ -127,4 +127,4 @@ jobs:
           images: 'diegog75/journal-app-react:master'
           pull: false
       - name: actualizar despliegue
-        run: kubctl rollout restart deployment journal-app -n default
+        run: kubectl rollout restart deployment journal-app -n default
