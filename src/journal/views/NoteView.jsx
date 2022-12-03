@@ -11,6 +11,20 @@ import { useEffect } from "react";
 import { savingNewNote, setActiveNote,startDeletingNote,startSaveNote, startUploadingFiles } from "../../store/journal";
 import { useRef } from "react";
 
+const parseDate = (fecha)=>{
+  var meses = [
+    "Enero", "Febrero", "Marzo",
+    "Abril", "Mayo", "Junio", "Julio",
+    "Agosto", "Septiembre", "Octubre",
+    "Noviembre", "Diciembre"
+  ]
+  
+  let date = fecha;
+  var dia = date.getDate();
+  var mes = date.getMonth();
+  var yyy = date.getFullYear();
+  return  `${dia} de  ${meses[mes]} de ${yyy}`
+}
 
 export const NoteView = () => {
 
@@ -22,10 +36,10 @@ export const NoteView = () => {
   const dateString = useMemo(()=>{
     const newDate = new Date(date);
     return newDate.toUTCString();
+    //return parseDate(newDate);
   },[date])
 
   const fileInputRef = useRef();
-
 
   useEffect(() => {
     dispatch(setActiveNote(formState));
@@ -118,7 +132,7 @@ export const NoteView = () => {
       </Grid>
 
         {/* Image gakkery */}
-        <ImageGallery images={note.imageUrls} />
+       { note?.imageUrls && <ImageGallery images={note.imageUrls} />}
 
     </Grid>
   );
