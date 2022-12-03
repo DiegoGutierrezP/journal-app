@@ -126,3 +126,5 @@ jobs:
              k8s-manifest/service.yaml
           images: 'diegog75/journal-app-react:master'
           pull: false
+      - name: actualizar despliegue
+        run: kubctl rollout restart deployment journal-app -n default
